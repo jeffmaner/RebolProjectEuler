@@ -124,3 +124,62 @@ greatest product. What is the value of that product? }
   r: to-string maximum ps
 
   copy/part r find r "." ]
+
+problem9: func [
+  { There exists exactly one Pythagorean triplet for which a + b + c = 1000.
+Find the product abc. }
+
+  /local u v a b c u' v'] [
+  ;;coprime?: func [m n] [1 = gcd m n]
+  ;;opposite-parity?: func [m n] [(odd? m and even? n) or (even? m and odd? m)]
+
+  pythagorean-triple: func [u v] [
+    a: u * v
+    b: ((u ** 2) - (v ** 2)) / 2
+    c: ((u ** 2) + (v ** 2)) / 2
+
+    reduce [a b c]
+  ]
+
+  make-uvs: func [u v] [
+    u1: (u * 2) + (v * -1)
+    v1: (u * 1) + (v * 0)
+    u2: (u * 2) + (v * 1)
+    v2: (u * 1) + (v * 0)
+    u3: (u * 1) + (v * 2)
+    v3: (u * 0) + (v * 1)
+
+    reduce [[u1 v1] [u2 v2] [u3 v3]]
+  ]
+
+  u: 3
+  v: 1
+
+  a: b: c: 0
+
+  while [u < 1000] [
+    uvs: copy []
+    uvs: make-uvs u v
+
+    pts: reduce [pythagorean-triple u1 v1 pythagorean-triple u2 v2 pythagorean-triple u3 v3]
+
+    foreach pt pts [
+      a: pt/1
+      b: pt/2
+      c: pt/3
+
+      if 1000 = (a + b + c) [break]
+    ]
+
+    u: uvs/1/1
+    v: uvs/1/2
+
+    u: uvs/2/1
+    v: uvs/2/2
+
+    u: uvs/3/1
+    v: uvs/3/2
+  ]
+
+  a * b * c
+]

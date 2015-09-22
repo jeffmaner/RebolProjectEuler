@@ -4,7 +4,6 @@ REBOL [
 ]
 
 ;; Load ancillary functions provided by others.
-do load %prime.r
 do load %prime-factors.r
 do load %sum-and-product.r
 
