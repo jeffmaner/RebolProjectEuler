@@ -1,5 +1,5 @@
-Project Euler
-=============
+Project Euler via Rebol
+=======================
 
 Synopsis
 --------
