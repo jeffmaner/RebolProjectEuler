@@ -134,9 +134,12 @@ Find the product abc. }
   ;;opposite-parity?: func [m n] [(odd? m and even? n) or (even? m and odd? m)]
 
   pythagorean-triple: func [u v] [
-    a: u * v
-    b: ((u ** 2) - (v ** 2)) / 2
-    c: ((u ** 2) + (v ** 2)) / 2
+    ;a: u * v
+    ;b: to-integer ((u ** 2) - (v ** 2)) / 2
+    ;c: to-integer ((u ** 2) + (v ** 2)) / 2
+    a: (u ** 2) - (v ** 2)
+    b: 2 * u * v
+    c: (u ** 2) + (v ** 2)
 
     reduce [a b c]
   ]
@@ -149,37 +152,46 @@ Find the product abc. }
     u3: (u * 1) + (v * 2)
     v3: (u * 0) + (v * 1)
 
-    reduce [[u1 v1] [u2 v2] [u3 v3]]
+    reduce [reduce [u1 v1] reduce [u2 v2] reduce [u3 v3]]
   ]
 
-  u: 3
+  u: 2;3
   v: 1
 
-  a: b: c: 0
+  r: f u v
 
-  while [u < 1000] [
+  ;; The triple must not be primitive.
+
+  ;r/1 * r/2 * r/3
+]
+
+
+  f: func [u v /local uvs pts n u' v' a b c] [
     uvs: copy []
     uvs: make-uvs u v
 
-    pts: reduce [pythagorean-triple u1 v1 pythagorean-triple u2 v2 pythagorean-triple u3 v3]
+    pts: copy []
+    pts: reduce [pythagorean-triple uvs/1/1 uvs/1/2 pythagorean-triple uvs/2/1 uvs/2/2 pythagorean-triple uvs/3/1 uvs/3/2]
 
-    foreach pt pts [
-      a: pt/1
-      b: pt/2
-      c: pt/3
+    for n 1 3 1 [
+      u': uvs/(n)/1
+      v': uvs/(n)/2
 
-      if 1000 = (a + b + c) [break]
+      ;print join [] [u' v']
+
+      for k 3 9 2 [
+      a: k * pts/(n)/1
+      b: k * pts/(n)/2
+      c: k * pts/(n)/3
+
+      print join [] [a b c (a + b + c)]
+
+      if (a > 100) or (b > 100) or (c > 100) [
+        break
+      ]
+
+      either 100 = (a + b + c) [reduce [a b c]] [f u' v']
+]
     ]
-
-    u: uvs/1/1
-    v: uvs/1/2
-
-    u: uvs/2/1
-    v: uvs/2/2
-
-    u: uvs/3/1
-    v: uvs/3/2
   ]
 
-  a * b * c
-]
