@@ -129,69 +129,68 @@ problem9: func [
   { There exists exactly one Pythagorean triplet for which a + b + c = 1000.
 Find the product abc. }
 
-  /local u v a b c u' v'] [
-  ;;coprime?: func [m n] [1 = gcd m n]
-  ;;opposite-parity?: func [m n] [(odd? m and even? n) or (even? m and odd? m)]
+  /local m n r] [
+  ;; https://en.wikipedia.org/wiki/Tree_of_primitive_Pythagorean_triples
+  ;; https://en.wikipedia.org/wiki/Pythagorean_triple
 
-  pythagorean-triple: func [u v] [
-    ;a: u * v
-    ;b: to-integer ((u ** 2) - (v ** 2)) / 2
-    ;c: to-integer ((u ** 2) + (v ** 2)) / 2
-    a: (u ** 2) - (v ** 2)
-    b: 2 * u * v
-    c: (u ** 2) + (v ** 2)
+  ;; coprime?: func [m n] [1 = gcd m n]
+  ;; opposite-parity?: func [m n] [(odd? m and even? n) or (even? m and odd? m)]
+
+  pythagorean-triple: func [m n] [
+    a: to-integer (m ** 2) - (n ** 2)
+    b: to-integer 2 * m * n
+    c: to-integer (m ** 2) + (n ** 2)
 
     reduce [a b c]
   ]
 
-  make-uvs: func [u v] [
-    u1: (u * 2) + (v * -1)
-    v1: (u * 1) + (v * 0)
-    u2: (u * 2) + (v * 1)
-    v2: (u * 1) + (v * 0)
-    u3: (u * 1) + (v * 2)
-    v3: (u * 0) + (v * 1)
+  make-mns: func [m n] [
+    m1: (m * 2) + (n * -1) ;; [m n] * [[2 -1]
+    n1: (m * 1) + (n * 0)  ;;          [1  0]]
+    m2: (m * 2) + (n * 1)  ;; [m n] * [[2 1]
+    n2: (m * 1) + (n * 0)  ;;          [1 0]]
+    m3: (m * 1) + (n * 2)  ;; [m n] * [[1 2]
+    n3: (m * 0) + (n * 1)  ;;          [0 1]]
 
-    reduce [reduce [u1 v1] reduce [u2 v2] reduce [u3 v3]]
+    reduce [reduce [m1 n1] reduce [m2 n2] reduce [m3 n3]]
   ]
 
-  u: 2;3
-  v: 1
-
-  r: f u v
-
-  ;; The triple must not be primitive.
-
-  ;r/1 * r/2 * r/3
-]
-
-
-  f: func [u v /local uvs pts n u' v' a b c] [
-    uvs: copy []
-    uvs: make-uvs u v
+  f: func [m n /local mns pts a b c i m' n' k] [
+    mns: copy []
+    mns: make-mns m n
 
     pts: copy []
-    pts: reduce [pythagorean-triple uvs/1/1 uvs/1/2 pythagorean-triple uvs/2/1 uvs/2/2 pythagorean-triple uvs/3/1 uvs/3/2]
+    pts: reduce [pythagorean-triple mns/1/1 mns/1/2 pythagorean-triple mns/2/1 mns/2/2 pythagorean-triple mns/3/1 mns/3/2]
 
-    for n 1 3 1 [
-      u': uvs/(n)/1
-      v': uvs/(n)/2
+    a: b: c: 0
+    s: 0
 
-      ;print join [] [u' v']
+    for i 1 3 1 [
+      m': mns/(i)/1
+      n': mns/(i)/2
 
-      for k 3 9 2 [
-      a: k * pts/(n)/1
-      b: k * pts/(n)/2
-      c: k * pts/(n)/3
+      for k 2 100 1 [
+        a: k * pts/(i)/1
+        b: k * pts/(i)/2
+        c: k * pts/(i)/3
 
-      print join [] [a b c (a + b + c)]
+        if (a > 1000) or (b > 1000) or (c > 1000) [break]
 
-      if (a > 100) or (b > 100) or (c > 100) [
-        break
+        s: a + b + c
+
+        if s = 1000 [break]
       ]
 
-      either 100 = (a + b + c) [reduce [a b c]] [f u' v']
-]
+      if s = 1000 [break]
     ]
+
+    reduce [a b c]
   ]
 
+  m: 2
+  n: 1
+
+  r: f m n
+
+  r/1 * r/2 * r/3
+]
