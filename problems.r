@@ -144,15 +144,17 @@ Find the product abc. }
     reduce [a b c]
   ]
 
-  make-mns: func [m n] [
-    m1: (m * 2) + (n * -1) ;; [m n] * [[2 -1]
-    n1: (m * 1) + (n * 0)  ;;          [1  0]]
-    m2: (m * 2) + (n * 1)  ;; [m n] * [[2 1]
-    n2: (m * 1) + (n * 0)  ;;          [1 0]]
-    m3: (m * 1) + (n * 2)  ;; [m n] * [[1 2]
-    n3: (m * 0) + (n * 1)  ;;          [0 1]]
+  make-mns: func [m n /local v] [
+    v: reduce [m n]
 
-    reduce [reduce [m1 n1] reduce [m2 n2] reduce [m3 n3]]
+    reduce [
+      v*m v [[2 -1]
+             [1  0]]
+      v*m v [[2 1]
+             [1 0]]
+      v*m v [[1 2]
+             [0 1]]
+    ]
   ]
 
   f: func [m n /local mns pts a b c i m' n' k] [
