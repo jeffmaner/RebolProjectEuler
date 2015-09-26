@@ -76,3 +76,24 @@ lcm: func [
 ] [
   m * n / gcd m n
 ]
+
+v*m: func [
+  "Multiply vector v by matrix m."
+
+  v "Vector"
+  m "Matrix"
+
+  /local sums row-sum] [
+  sums: copy []
+
+  foreach r m [
+    row-sum: 0
+    for c 1 length? r 1 [
+      row-sum: row-sum + (r/(c) * v/(c))
+    ]
+
+    append sums row-sum
+  ]
+
+  sums
+]
