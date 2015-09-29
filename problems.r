@@ -196,3 +196,20 @@ Find the product abc. }
 
   r/1 * r/2 * r/3
 ]
+
+problem10: func [
+  "Find the sum of all the primes below two million."
+
+  /local ps n] [
+
+  ps: copy []
+  n: 0
+
+  while [2'000'000'000 > n] [
+    n: n + 1
+
+    if 1 = length? prime-factors n [
+      append ps n ] ]
+
+  sum ps
+]
