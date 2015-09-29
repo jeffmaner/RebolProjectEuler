@@ -184,3 +184,57 @@ primes-under': func [
   ps
 ]
 
+primes-range: func [
+  lo "Low limit of range."
+  hi "High limit of range."
+  delta "Size of segments."
+] [
+  q-init: func [p] [
+    to-integer ((-1 / 2) * (lo + p + 1)) // p
+  ]
+  q-reset: func [p q] [
+    to-integer (q - delta) // p
+  ]
+
+  r: copy []
+
+  ps: primes-under to-integer square-root hi
+  remove ps ;; Remove 2.
+
+  qs: copy []
+  foreach p ps [append qs q-init p]
+
+  while [lo < hi] [
+    sieve: copy array/initial delta 1
+
+    for i 1 length? ps 1 [
+      print qs/(i)
+      print ps/(i)
+      for j qs/(i) delta ps/(i) [
+        change at sieve j 0
+      ]
+    ]
+
+    qs': copy []
+    for i 1 length? ps 1 [
+      append qs' q-reset ps/(i) qs/(i)
+    ]
+
+    qs: qs'
+
+    i: 0
+    t: lo + 1
+    while [(i < delta) and (t < hi)] [
+      if sieve/(i) [
+        append r t
+      ]
+
+      i: i + 1
+      t: t + 2
+    ]
+
+    lo: lo + (2 * delta)
+  ]
+
+  r
+]
