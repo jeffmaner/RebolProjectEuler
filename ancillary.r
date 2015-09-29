@@ -97,3 +97,90 @@ v*m: func [
 
   sums
 ]
+
+primes-under: func [
+  { Description: "Returns the primes under limit."
+    Technique: "Sieve of Eratosthenes"
+    Inspired-by: http://www.scriptol.com/programming/sieve.php#rebol }
+
+  limit [integer! decimal!] "Return all primes under this limit."
+
+  /local flags f k ps] [
+
+  flags: copy array/initial limit 1
+
+  for i 2 to-integer square-root limit 1 [
+    f: pick flags 1
+    if f = 1 [
+      k: i + i
+      while [k <= limit] [
+        change at flags k 0
+        k: k + i
+      ]
+    ]
+  ]
+
+  ps: copy []
+  for i 2 (length? flags) - 1 1 [
+    if 1 = flags/(i) [
+      append ps i
+    ]
+  ]
+
+  ps
+]
+
+primes-under': func [
+  { Description: "Returns the primes under limit."
+    Technique: "Segmented Sieve of Eratosthenes"
+    Inspired-by: [
+      http://www.scriptol.com/programming/sieve.php#rebol
+      https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#Segmented_sieve ] }
+
+  limit [integer! decimal!] "Return all primes under this limit."
+
+  /local delta flags f k ps] [
+
+  delta: to-integer square-root limit
+
+  flags: copy array/initial delta 1
+
+  for i 2 delta 1 [
+    f: pick flags 1
+    if f = 1 [
+      k: i + i
+      while [k <= delta] [
+        change at flags k 0
+        k: k + i
+      ]
+    ]
+  ]
+
+  ps: copy []
+  for i 2 (length? flags) - 1 1 [
+    if 1 = flags/(i) [
+      append ps i
+    ]
+  ]
+
+  for delta-block 2 limit / delta 1 [
+    flags: copy array/initial delta 1
+
+    d: delta * (delta-block - 1)
+    foreach p ps [
+      for i (d + 1) (d + delta) 1 [
+        f: pick flags 1
+        if f = 1 [
+          k: i + i
+          while [k <= delta] [
+            change at flags k 0
+            k: k + i
+          ]
+        ]
+      ]
+    ]
+  ]
+
+  ps
+]
+
