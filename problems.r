@@ -8,7 +8,7 @@ do load %ancillary.r
 problem1: func [
   "Add all the Natural numbers below 1000 that are multiples of 3 or 5."
 ] [
-  sum remove-each n naturals/to 999 [not ((n // 3) = 0) or ((n // 5) = 0)] ;; 233168.
+  to-integer sum remove-each n naturals/to 999 [not ((n // 3) = 0) or ((n // 5) = 0)] ;; 233168.
 ]
 
 problem2: func [
@@ -25,7 +25,7 @@ problem2: func [
 
   remove-each f fs [odd? f]
 
-  sum fs ;; 4613732.
+  to-integer sum fs ;; 4613732.
 ]
 
 problem3: func [
@@ -198,18 +198,27 @@ Find the product abc. }
 ]
 
 problem10: func [
-  "Find the sum of all the primes below two million."
+  { Description: "Find the sum of all the primes below two million."
+    Remarks: { Two million is too large for Rebol, apparently, so I've used a
+segmented version of the sieve. } }
 
-  /local ps n] [
+  /local ps lo delta hi r] [
 
   ps: copy []
-  n: 0
 
-  while [2'000'000'000 > n] [
-    n: n + 1
+  lo: 1'000'000
+  delta: 1'000'000 ;; Must divide hi - lo.
+  hi: lo + delta
 
-    if 1 = length? prime-factors n [
-      append ps n ] ]
+  ps: primes-under lo
 
-  sum ps
+  while [2'000'000'000 > hi] [
+    ps: join ps primes-range lo hi delta
+
+    lo: lo + delta
+    hi: lo + delta
+  ]
+
+  r: to-string sum ps
+  copy/part r find r "."
 ]
