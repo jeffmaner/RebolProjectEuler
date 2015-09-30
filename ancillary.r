@@ -134,13 +134,15 @@ primes-range: func [
   { Description: "Returns the primes within the range using segments of size delta."
     Technique: "Segmented Sieve of Eratosthenes"
     Inspired-by: [ http://programmingpraxis.com/2010/02/05/segmented-sieve-of-eratosthenes/
-                   http://stackoverflow.com/questions/10249378/segmented-sieve-of-eratosthenes ] }
+                   http://stackoverflow.com/questions/10249378/segmented-sieve-of-eratosthenes ]
+    Remarks: { My Rebol/View is complaining about Rebol 3 bitset! features.
+               So, for now, I'll just use an array of integers. } }
 
   lo    [integer! decimal!] "Low limit of range."
   hi    [integer! decimal!] "High limit of range."
   delta [integer! decimal!] "Size of segments."
 
-  /local r ps qs qs' i j t
+  /local r ps qs qs' sieve i j t
 ] [
   q-init: func [p] [
     mod to-integer ((-1 / 2) * (lo + p + 1)) p
