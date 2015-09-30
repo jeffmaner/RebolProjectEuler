@@ -105,7 +105,7 @@ primes-under: func [
 
   limit [integer! decimal!] "Return all primes under this limit."
 
-  /local flags f k ps] [
+  /local flags f k ps i] [
 
   flags: copy array/initial limit 1
 
@@ -130,70 +130,23 @@ primes-under: func [
   ps
 ]
 
-primes-under': func [
-  { Description: "Returns the primes under limit."
-    Technique: "Segmented Sieve of Eratosthenes"
-    Inspired-by: [
-      http://www.scriptol.com/programming/sieve.php#rebol
-      https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes#Segmented_sieve ] }
-
-  limit [integer! decimal!] "Return all primes under this limit."
-
-  /local delta flags f k ps] [
-
-  delta: to-integer square-root limit
-
-  flags: copy array/initial delta 1
-
-  for i 2 delta 1 [
-    f: pick flags 1
-    if f = 1 [
-      k: i + i
-      while [k <= delta] [
-        change at flags k 0
-        k: k + i
-      ]
-    ]
-  ]
-
-  ps: copy []
-  for i 2 (length? flags) - 1 1 [
-    if 1 = flags/(i) [
-      append ps i
-    ]
-  ]
-
-  for delta-block 2 limit / delta 1 [
-    flags: copy array/initial delta 1
-
-    d: delta * (delta-block - 1)
-    foreach p ps [
-      for i (d + 1) (d + delta) 1 [
-        f: pick flags 1
-        if f = 1 [
-          k: i + i
-          while [k <= delta] [
-            change at flags k 0
-            k: k + i
-          ]
-        ]
-      ]
-    ]
-  ]
-
-  ps
-]
-
 primes-range: func [
-  lo "Low limit of range."
-  hi "High limit of range."
-  delta "Size of segments."
+  { Description: "Returns the primes within the range using segments of size delta."
+    Technique: "Segmented Sieve of Eratosthenes"
+    Inspired-by: [ http://programmingpraxis.com/2010/02/05/segmented-sieve-of-eratosthenes/
+                   http://stackoverflow.com/questions/10249378/segmented-sieve-of-eratosthenes ] }
+
+  lo    [integer! decimal!] "Low limit of range."
+  hi    [integer! decimal!] "High limit of range."
+  delta [integer! decimal!] "Size of segments."
+
+  /local r ps qs qs' i j t
 ] [
   q-init: func [p] [
-    to-integer ((-1 / 2) * (lo + p + 1)) // p
+    mod to-integer ((-1 / 2) * (lo + p + 1)) p
   ]
   q-reset: func [p q] [
-    to-integer (q - delta) // p
+    mod to-integer (q - delta) p
   ]
 
   r: copy []
@@ -208,9 +161,7 @@ primes-range: func [
     sieve: copy array/initial delta 1
 
     for i 1 length? ps 1 [
-      print qs/(i)
-      print ps/(i)
-      for j qs/(i) delta ps/(i) [
+      for j (qs/(i) + 1) delta ps/(i) [
         change at sieve j 0
       ]
     ]
@@ -222,10 +173,10 @@ primes-range: func [
 
     qs: qs'
 
-    i: 0
+    i: 1
     t: lo + 1
     while [(i < delta) and (t < hi)] [
-      if sieve/(i) [
+      if 1 = sieve/(i) [
         append r t
       ]
 
