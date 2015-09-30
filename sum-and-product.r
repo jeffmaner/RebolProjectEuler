@@ -3,7 +3,7 @@ REBOL [
   Inspired-by: https://github.com/acmeism/RosettaCodeData/blob/master/Task/Sum-and-product-of-an-array/REBOL/sum-and-product-of-an-array.rebol
 ]
 
-sum: func [a [block!] /local x] [x: 0  forall a [x: x + a/1]  x]
+sum: func [a [block!] /local x] [x: to-decimal 0  forall a [x: x + a/1]  x]
 product: func [a [block!] /local x] [x: 1  forall a [x: x * a/1]  x]
 
 redux: func [
