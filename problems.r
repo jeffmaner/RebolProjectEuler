@@ -121,9 +121,8 @@ greatest product. What is the value of that product? }
   foreach dl dls [
     append ps product dl ]
 
-  r: to-string maximum ps
-
-  copy/part r find r "." ]
+  decimal-to-big-natural maximum ps
+]
 
 problem9: func [
   { There exists exactly one Pythagorean triplet for which a + b + c = 1000.
@@ -202,7 +201,7 @@ problem10: func [
     Remarks: { Two million is too large for Rebol, apparently, so I've used a
 segmented version of the sieve. } }
 
-  /local ps lo delta hi r] [
+  /local ps lo delta hi] [
 
   ps: copy []
 
@@ -219,6 +218,5 @@ segmented version of the sieve. } }
     hi: lo + delta
   ]
 
-  r: to-string sum ps
-  copy/part r find r "."
+  decimal-to-big-natural sum ps
 ]
