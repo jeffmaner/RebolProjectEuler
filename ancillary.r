@@ -191,3 +191,14 @@ primes-range: func [
 
   r
 ]
+
+decimal-to-big-natural: func [
+  "Returns to-integer d for ds beyond the range of integers."
+
+  d [decimal!] "Decimal to convert to integer."
+
+  /local r
+] [
+  r: to-string d
+  copy/part r find r "."
+]
