@@ -136,7 +136,7 @@ primes-range: func [
     Inspired-by: [ http://programmingpraxis.com/2010/02/05/segmented-sieve-of-eratosthenes/
                    http://stackoverflow.com/questions/10249378/segmented-sieve-of-eratosthenes ]
     Remarks: { My Rebol/View is complaining about Rebol 3 bitset! features.
-               So, for now, I'll just use an array of integers. } }
+               So, for now, I'll just use an array of booleans. } }
 
   lo    [integer! decimal!] "Low limit of range."
   hi    [integer! decimal!] "High limit of range."
@@ -160,11 +160,11 @@ primes-range: func [
   foreach p ps [append qs q-init p]
 
   while [lo < hi] [
-    sieve: copy array/initial delta 1
+    sieve: copy array/initial delta true
 
     for i 1 length? ps 1 [
       for j (qs/(i) + 1) delta ps/(i) [
-        change at sieve j 0
+        change at sieve j false
       ]
     ]
 
@@ -178,7 +178,7 @@ primes-range: func [
     i: 1
     t: lo + 1
     while [(i < delta) and (t < hi)] [
-      if 1 = sieve/(i) [
+      if sieve/(i) [
         append r t
       ]
 
