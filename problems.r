@@ -220,3 +220,14 @@ segmented version of the sieve. } }
 
   decimal-to-big-natural sum ps
 ]
+
+problem11: func [
+  { What is the greatest product of four adjacent numbers in the same direction
+(up, down, left, right, or diagonally) in the 20×20 grid? }
+
+  /local grid ] [
+
+  grid: data/problem11
+
+  "undefined"
+]
