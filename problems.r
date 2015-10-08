@@ -302,3 +302,16 @@ problem11: func [
 
   maximum products
 ]
+
+problem12: func [
+  "What is the value of the first triangle number to have over five hundred divisors?"
+  /local t n] [
+  t: n: 1
+
+  while [500 > length? divisors t] [
+    n: n + 1
+    t: t + n
+  ]
+
+  t ;; Runs in over a minute.
+]
