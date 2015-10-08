@@ -335,3 +335,41 @@ problem13: func [
 
   copy/part replace to-string sum numbers "." "" 10
 ]
+
+problem14: func [
+  "Which starting number, under one million, produces the longest Collatz sequence?"
+
+  /local n max-length starting-number m] [
+  next-collatz-term: func [n [integer! decimal!]] [
+    either even? n [
+      n / 2
+    ] [
+      3 * n + 1
+    ]
+  ]
+
+  collatz-sequence: func [n [integer! decimal!] /local ns m] [
+    ns: reduce [n]
+    m: n
+
+    until [
+      m: next-collatz-term m
+      append ns m
+      m = 1
+    ]
+
+    ns
+  ]
+
+  max-length: starting-number: 1
+
+  for n 13. 999'999. 1. [
+    m: length? collatz-sequence n
+    if m > max-length [
+      max-length: m
+      starting-number: n
+    ]
+  ]
+
+  to-integer starting-number ;; Runs in over two minutes.
+]
