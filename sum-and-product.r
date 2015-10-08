@@ -4,7 +4,7 @@ REBOL [
 ]
 
 sum: func [a [block!] /local x] [x: to-decimal 0  forall a [x: x + a/1]  x]
-product: func [a [block!] /local x] [x: 1  forall a [x: x * a/1]  x]
+product: func [a [block!] /local x] [x: to-decimal 1  forall a [x: x * a/1]  x]
 
 redux: func [
 	"Applies an operation across an array to produce a reduced value."
