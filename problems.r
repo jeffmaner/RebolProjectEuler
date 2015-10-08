@@ -315,3 +315,23 @@ problem12: func [
 
   t ;; Runs in over a minute.
 ]
+
+problem13: func [
+  "Work out the first ten digits of the sum of the following one-hundred 50-digit numbers."
+
+  /local text strings s numbers] [
+  text: trim data/problem13
+  strings: copy []
+  numbers: copy []
+
+  while [find text newline] [
+    append strings reduce [copy/part text 50]
+    text: skip text 50 + 1
+  ]
+
+  foreach s strings [
+    append numbers to-decimal s
+  ]
+
+  copy/part replace to-string sum numbers "." "" 10
+]
