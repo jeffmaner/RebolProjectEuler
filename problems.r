@@ -225,9 +225,80 @@ problem11: func [
   { What is the greatest product of four adjacent numbers in the same direction
 (up, down, left, right, or diagonally) in the 20×20 grid? }
 
-  /local grid ] [
+  /local grid rows numbers n digits products window-product r c d o ] [
 
-  grid: data/problem11
+  grid: trim data/problem11
 
-  "undefined"
+  length: 20
+  window:  4
+
+  ;; Convert grid to rows of integers.
+
+  rows: copy []
+
+  while [find grid newline] [
+    numbers: copy []
+
+    for n 1 length 1 [
+      digits: copy/part grid 2
+      append numbers to-integer digits
+      grid: skip grid 3
+    ]
+
+    append rows reduce [numbers]
+  ]
+
+  products: copy []
+
+  window-product: 1
+
+  ;; Take the windowed products along the rows.
+  for r 1 length 1 [
+    for c 1 length - window + 1 1 [
+      for o 0 window - 1 1 [
+        window-product: window-product * rows/(r)/(c + o)
+      ]
+      append products window-product
+      window-product: 1
+    ]
+  ]
+
+  ;; Take the windowed products along the columns.
+  for c 1 length 1 [
+    for r 1 length - window + 1 1 [
+      for o 0 window - 1 1 [
+        window-product: window-product * rows/(r + o)/(c)
+      ]
+      append products window-product
+      window-product: 1
+    ]
+  ]
+
+  ;; Take the windowed products along the diagonals from right-top to left-bottom starting at the left and moving to the right.
+  for d window length 1 [
+    for r 1 d - window + 1 1 [
+      for c d window -1 [
+        for o 0 window - 1 1 [
+          window-product: window-product * rows/(r + o)/(c - o)
+        ]
+        append products window-product
+        window-product: 1
+      ]
+    ]
+  ]
+
+  ;; Take the windowed products along the diagonals from left-top to right-bottom starting at the right and moving to the left.
+  for d length - window + 1 1 -1 [
+    for r 1 length - window + 1 - d + 1 1 [
+      for c d length - window + 1 1 [
+        for o 0 window - 1 1 [
+          window-product: window-product * rows/(r + o)/(c + o)
+        ]
+        append products window-product
+        window-product: 1
+      ]
+    ]
+  ]
+
+  maximum products
 ]
