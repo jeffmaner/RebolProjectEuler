@@ -202,3 +202,30 @@ decimal-to-big-natural: func [
   r: to-string d
   copy/part r find r "."
 ]
+
+divisors: func [
+  "Returns a list of divisors of n."
+
+  n [integer!] "Natural for which to compute divisors."
+
+  /local limit ds m
+] [
+  either n = 1 [
+    [1]
+  ] [
+    limit: square-root n
+    ds: copy []
+    m: 1
+
+    while [limit >= m] [
+      if 0 = mod n m [
+        append ds m
+        append ds n / m
+      ]
+
+      m: m + 1
+    ]
+
+    sort ds
+  ]
+]
