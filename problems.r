@@ -373,3 +373,19 @@ problem14: func [
 
   to-integer starting-number ;; Runs in over two minutes.
 ]
+
+problem15: func [
+  "How many routes are there through a 20x20 grid from the top left corner to the bottom right corner?"
+] [
+  ;; http://theburningmonk.com/2010/09/project-euler-problem-15-solution/
+
+  factorial: func [n [integer!]] [
+    product naturals/to n
+  ]
+
+  combo: func [n [integer!] k [integer!]] [
+    (factorial n) / ((factorial k) * factorial (n - k))
+  ]
+
+  decimal-to-big-natural combo 40 20
+]
