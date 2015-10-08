@@ -389,3 +389,9 @@ problem15: func [
 
   decimal-to-big-natural combo 40 20
 ]
+
+problem16: func [
+  "What is the sum of the digits of the number 2 ^ 1000?"
+] [
+  -1
+]
