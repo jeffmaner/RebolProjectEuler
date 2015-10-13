@@ -2,8 +2,9 @@ REBOL [
   Title: "Project Euler Problem Exploration"
 ]
 
-do load %data.r
 do load %ancillary.r
+do load %bignumbers.r
+do load %data.r
 
 problem1: func [
   "Add all the Natural numbers below 1000 that are multiples of 3 or 5."
@@ -392,6 +393,19 @@ problem15: func [
 
 problem16: func [
   "What is the sum of the digits of the number 2 ^ 1000?"
-] [
-  -1
+
+  /local r i ds d] [
+  ;; Use bignumbers.r, since Rebol won't give me the number without scientific notation.
+  r: {1}
+  for i 1 1000 1 [
+    reverse r
+    r: reverse multiply r {2}
+  ]
+
+  ds: copy []
+  foreach d r [
+    append ds to-integer to-string d
+  ]
+
+  to-integer sum ds
 ]
