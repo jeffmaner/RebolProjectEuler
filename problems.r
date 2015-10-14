@@ -409,3 +409,77 @@ problem16: func [
 
   to-integer sum ds
 ]
+
+problem17: func [
+  "How many letters will be used to write the numbers from 1 to 1000 in words?"
+
+  /local letter-counts s n] [
+  letter-counts: [
+     1 3
+     2 3
+     3 5
+     4 4
+     5 4
+     6 3
+     7 5
+     8 5
+     9 4
+
+    10 3
+    11 6
+    12 6
+    13 8
+    14 8
+    15 7
+    16 7
+    17 9
+    18 8
+    19 8
+
+    20 6
+    30 6
+    40 5
+    50 5
+    60 5
+    70 7
+    80 6
+    90 6
+  ]
+
+  letter-count: func [n [integer!]] [
+    letters: func [n [integer!]] [first select/skip letter-counts n 2]
+    hundred-letters: length? "hundred"
+    and-letters: length? "and"
+
+    if n > 99 [
+      h: to-integer n / 100
+      r: n // 100
+      either r > 0 [
+        return (letters h) + hundred-letters + and-letters + letter-count r
+      ] [
+        return (letters h) + hundred-letters
+      ]
+    ]
+
+    if n > 19 [
+      t: 10 * to-integer n / 10
+      r: n // 10
+      either r > 0 [
+        return (letters t) + letter-count r
+      ] [
+        return letters n
+      ]
+    ]
+
+    letters n
+  ]
+
+  s: 0
+  for n 1 1000 1 [
+    s: s + letter-count n
+  ]
+
+  s: s + (letter-count 1) + length? "thousand"
+
+  s
+]
