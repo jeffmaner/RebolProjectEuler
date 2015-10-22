@@ -498,3 +498,34 @@ problem18: func [
 
   rows/1/1
 ]
+
+problem19: func [
+  "How many Sundays fell on the first of the month during the twentieth century (1901 Jan 1 to 2000 Dec 31)?"
+
+  /local years-in-century months-in-year days-in-week days-of-week d sundays] [
+  ;; This is just too cool not to include. :P
+  to-integer 100 * 12 / 7
+
+  ;; Elaborating a little.
+  years-in-century: 100
+  months-in-year: 12
+  days-in-week: 7
+
+  to-integer years-in-century * months-in-year / days-in-week
+
+  ;; But Rebol has some really cool date functionality. Let's use that.
+  days-of-week: ["Mon" "Tue" "Wed" "Thu" "Fri" "Sat" "Sun"]
+  d: 1901/Jan/01
+  sundays: 0
+
+  ;; Tried a for loop, and it was just a tad bit slower than this while loop.
+  while [d <= 2000/Dec/31] [
+    if (d/day = 1) and ("Sun" = pick days-of-week d/weekday) [
+      sundays: sundays + 1
+    ]
+
+    d: d + 1
+  ]
+
+  sundays
+]
