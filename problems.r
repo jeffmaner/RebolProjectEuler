@@ -461,3 +461,40 @@ problem17: func [
 
   s
 ]
+
+problem18: func [
+  { Description: "Find the maximum total from top to bottom of the triangle."
+    Inspired-by: http://www.mathblog.dk/project-euler-18/ }
+
+  /local triangle length rows numbers n digits r c] [
+  ;; Padded data/problem18 with zeros as described at mathblog.
+  triangle: trim data/problem18
+
+  length: 15
+
+  ;; Convert triangle to rows of integers.
+
+  rows: copy []
+
+  ;; TODO: refactor splitting into lines.
+
+  while [find triangle newline] [
+    numbers: copy []
+
+    for n 1 length 1 [
+      digits: copy/part triangle 2
+      append numbers to-integer digits
+      triangle: skip triangle 3
+    ]
+
+    append rows reduce [numbers]
+  ]
+
+  for r length - 1 1 -1 [
+    for c 1 r 1 [
+      rows/(r)/(c): rows/(r)/(c) + max rows/(r + 1)/(c) rows/(r + 1)/(c + 1)
+    ]
+  ]
+
+  rows/1/1
+]
