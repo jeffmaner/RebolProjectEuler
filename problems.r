@@ -512,6 +512,8 @@ problem19: func [
   days-in-week: 7
 
   to-integer years-in-century * months-in-year / days-in-week
+  ;; That only works because the distribution of weekdays is uniform for this
+  ;; time period.
 
   ;; But Rebol has some really cool date functionality. Let's use that.
   days-of-week: ["Mon" "Tue" "Wed" "Thu" "Fri" "Sat" "Sun"]
@@ -547,4 +549,120 @@ problem20: func [
   ]
 
   to-integer sum ds
+]
+
+problem21: func [
+  "Evaluate the sum of all the amicable numbers under 10'000."
+
+  ;/local limit ds n amicable-numbers dn ddn
+  ;/local limit ds n amicable-numbers dn ddn
+  ;/local limit amicable-sum n dn ddn
+  /local limit ps amicable-sum n dn
+] [
+  ;; Four iterations follow, from sloppy and brute force to optimized.
+
+  ;d: func [n [integer!]] [to-integer sum proper-divisors n]
+  ;amicable-pair?: func [n [integer!] dn [integer!] ddn [integer!]] [(not dn = n) and (ddn = n)]
+
+  limit: 10'000
+
+  ;; Somewhat sloppy brute force approach:
+  ;; =====================================
+  ;ds: copy []
+  ;for n 1 limit 1 [ append ds d n ]
+
+  ;amicable-numbers: copy []
+  ;for n 1 limit 1 [
+  ;  dn: ds/(n)
+  ;  ddn: ds/(dn)
+
+  ;  if (not dn = n) and (ddn = n) [
+  ;    append amicable-numbers n
+  ;  ]
+  ;]
+
+  ;to-integer sum amicable-numbers ;; 1.156 seconds.
+
+  ;; Less sloppy, but still brute force approach:
+  ;; ============================================
+  ;ds: copy []
+  ;for n 1 limit 1 [ append ds d n ]
+
+  ;amicable-numbers: copy []
+  ;for n 1 limit 1 [
+  ;  dn: ds/(n)
+
+  ;  if (1 < dn) and (dn <= limit) [
+  ;    ddn: ds/(dn)
+
+  ;    if amicable-pair? n dn ddn [
+  ;      append amicable-numbers n
+  ;    ]
+  ;  ]
+  ;]
+
+  ;to-integer sum amicable-numbers ;; 1.172 seconds.
+
+  ;; A bit of optimization:
+  ;; ======================
+  ;amicable-sum: 0
+  ;for n 2 limit 1 [
+  ;  dn: d n
+
+  ;  if (n < dn) and (dn <= limit) [
+  ;    ddn: d dn
+
+  ;    if ddn = n [
+  ;      amicable-sum: amicable-sum + n + dn
+  ;    ]
+  ;  ]
+  ;]
+
+  ;amicable-sum ;; 1.391 seconds.
+
+  ;; Further optimization (based on analysis at http://www.mathblog.dk/project-euler-21-sum-of-amicable-pairs/):
+  ;; ============================================
+  ps: primes-under limit
+
+  dP: func [n [integer!] /local m s p i j] [
+    m: n
+    s: 1
+    p: ps/1
+    i: 1
+
+    while [(p * p <= m) and (m > 1) and (i < length? ps)] [
+      p: ps/(i)
+      i: i + 1
+
+      if 0 = mod m p [
+        j: p * p
+        m: m / p
+
+        while [0 = mod m p] [
+          j: j * p
+          m: m / p
+        ]
+
+        s: s * (j - 1) / (p - 1)
+      ]
+    ]
+
+    ;; A prime factor larger than the square root remains.
+    if m > 1 [s: s * (m + 1)]
+
+    s - n
+  ]
+
+  amicable-sum: 0
+  for n 2 limit 1 [
+    dn: dP n
+
+    if (n < dn) and (dn <= limit) [
+      if n = dP dn [
+        amicable-sum: amicable-sum + n + dn
+      ]
+    ]
+  ]
+
+  amicable-sum ;; 0.313 seconds.
 ]
