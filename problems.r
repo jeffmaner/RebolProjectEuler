@@ -529,3 +529,22 @@ problem19: func [
 
   sundays
 ]
+
+problem20: func [
+  "Find the sum of the digits in the number 100!."
+
+  /local r n ds d] [
+  ;; Use bignumbers.r, since Rebol won't give me the number without scientific notation.
+  r: {1}
+  for n 100 1 -1 [
+    reverse r
+    r: reverse multiply r to-string n
+  ]
+
+  ds: copy []
+  foreach d r [
+    append ds to-integer to-string d
+  ]
+
+  to-integer sum ds
+]
