@@ -229,3 +229,13 @@ divisors: func [
     sort ds
   ]
 ]
+
+proper-divisors: func [
+  "Returns a list of proper (less than n) divisors of n."
+
+  n [integer!] "Natural for which to compute divisors."
+  /local ds] [
+  ds: divisors n
+
+  copy/part ds (- 1 + length? ds)
+]
