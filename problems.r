@@ -666,3 +666,23 @@ problem21: func [
 
   amicable-sum ;; 0.313 seconds.
 ]
+
+problem22: func [
+  "What is the sum of the name scores in the file?"
+
+  /local names r n] [
+  name-score: func [s [string!] /local x] [
+    letter-score: func [c [char!]] [(to-integer c) + 1 - to-integer #"A"]
+    x: 0
+    foreach c s [x: x + letter-score c]
+  ]
+
+  names: sort parse read %names.txt none
+
+  r: 0
+  for n 1 length? names 1 [
+    r: r + (n * name-score names/(n))
+  ]
+
+  r
+]
