@@ -239,3 +239,40 @@ proper-divisors: func [
 
   copy/part ds (- 1 + length? ds)
 ]
+
+sum-of-proper-divisors: func [
+  { Description: "Efficiently compute the sum of the proper divisors of n given primes ps."
+    Inspired-by: http://www.mathblog.dk/project-euler-21-sum-of-amicable-pairs/ }
+
+  n  [integer!] "Natural whose proper divisors are to be summed."
+  ps [block!]   "Primes to use in computation."
+
+  /local m s p i j] [
+
+  m: n
+  s: 1
+  p: ps/1
+  i: 1
+
+  while [(p * p <= m) and (m > 1) and (i < length? ps)] [
+    p: ps/(i)
+    i: i + 1
+
+    if 0 = mod m p [
+      j: p * p
+      m: m / p
+
+      while [0 = mod m p] [
+        j: j * p
+        m: m / p
+      ]
+
+      s: s * (j - 1) / (p - 1)
+    ]
+  ]
+
+  ;; A prime factor larger than the square root remains.
+  if m > 1 [s: s * (m + 1)]
+
+  s - n
+]

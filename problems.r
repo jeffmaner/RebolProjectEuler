@@ -624,41 +624,12 @@ problem21: func [
   ;; ============================================
   ps: primes-under limit
 
-  dP: func [n [integer!] /local m s p i j] [
-    m: n
-    s: 1
-    p: ps/1
-    i: 1
-
-    while [(p * p <= m) and (m > 1) and (i < length? ps)] [
-      p: ps/(i)
-      i: i + 1
-
-      if 0 = mod m p [
-        j: p * p
-        m: m / p
-
-        while [0 = mod m p] [
-          j: j * p
-          m: m / p
-        ]
-
-        s: s * (j - 1) / (p - 1)
-      ]
-    ]
-
-    ;; A prime factor larger than the square root remains.
-    if m > 1 [s: s * (m + 1)]
-
-    s - n
-  ]
-
   amicable-sum: 0
   for n 2 limit 1 [
-    dn: dP n
+    dn: sum-of-proper-divisors n ps
 
     if (n < dn) and (dn <= limit) [
-      if n = dP dn [
+      if n = sum-of-proper-divisors dn ps [
         amicable-sum: amicable-sum + n + dn
       ]
     ]
@@ -685,4 +656,20 @@ problem22: func [
   ]
 
   r
+]
+
+problem23: func [
+  { Find the sum of all the positive integers which cannot be written as the sum
+of two abundant numbers. }
+] [
+  d: func [n [integer!]] [to-integer sum unique proper-divisors n]
+
+  abundants: copy []
+  for n 1 28'123 1 [
+    if n < d n [ append abundants n ]
+  ]
+
+probe abundants
+
+  "undefined"
 ]
