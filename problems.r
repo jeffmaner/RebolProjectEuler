@@ -624,12 +624,14 @@ problem21: func [
   ;; ============================================
   ps: primes-under limit
 
+  d: func [n] [sum-of-proper-divisors n ps]
+
   amicable-sum: 0
   for n 2 limit 1 [
-    dn: sum-of-proper-divisors n ps
+    dn: d n
 
     if (n < dn) and (dn <= limit) [
-      if n = sum-of-proper-divisors dn ps [
+      if n = d dn [
         amicable-sum: amicable-sum + n + dn
       ]
     ]
@@ -661,15 +663,42 @@ problem22: func [
 problem23: func [
   { Find the sum of all the positive integers which cannot be written as the sum
 of two abundant numbers. }
-] [
-  d: func [n [integer!]] [to-integer sum unique proper-divisors n]
+
+  /local limit ps abundants n sums-of-two-abundants? m i s] [
+  ;; Inspired-by http://www.mathblog.dk/project-euler-23-find-positive-integers-not-sum-of-abundant-numbers/
+
+  limit: 28'123
+
+  ps: primes-under limit
+
+  d: func [n] [sum-of-proper-divisors n ps]
 
   abundants: copy []
-  for n 1 28'123 1 [
+  for n 2 limit 1 [
     if n < d n [ append abundants n ]
   ]
 
-probe abundants
+  abundant-count: length? abundants
 
-  "undefined"
+  sums-of-two-abundants?: copy array/initial limit false
+  for m 1 abundant-count 1 [
+    for n m abundant-count 1 [
+      i: abundants/(m) + abundants/(n)
+
+      if i > limit [
+        break
+      ]
+
+      sums-of-two-abundants?/(i): true
+    ]
+  ]
+
+  s: 0
+  for n 1 limit 1 [
+    if not sums-of-two-abundants?/(n) [
+      s: s + n
+    ]
+  ]
+
+  s ;; Yikes! 15.672 seconds.
 ]
