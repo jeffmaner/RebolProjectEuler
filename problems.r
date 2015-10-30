@@ -702,3 +702,50 @@ of two abundant numbers. }
 
   s ;; Yikes! 15.672 seconds.
 ]
+
+problem24: func [
+  { Description: "What is the millionth lexicographic permutation of the digits 0 through 9?"
+    Inspired-by: http://www.mathblog.dk/project-euler-24-millionth-lexicographic-permutation/ }
+
+  /local digits N r rem i fac-n j k] [
+  ;; This is based on Kristian Edlund's combinatorial analysis of the problem.
+
+  factorial: func [n [integer!]] [
+    product naturals/to n
+  ]
+
+  remove-at: func [b [block!] n [integer!]] [
+    b: head b
+
+    for m 1 n 1 [
+      b: next b
+    ]
+
+    remove b
+
+    b: head b
+
+    b
+  ]
+
+  digits: [ 0 1 2 3 4 5 6 7 8 9 ]
+  N: length? digits
+  r: copy ""
+  rem: 1'000'000 - 1
+
+  for i 1 N 1 [
+    fac-n: factorial (N - i)
+    j: to-integer rem / fac-n
+    rem: remainder rem fac-n
+    r: join r digits/(j + 1)
+    digits: remove-at digits j
+
+    if rem = 0 [ break ]
+  ]
+
+  for i 1 length? digits 1 [
+    r: join r digits/(i)
+  ]
+
+  r
+]
